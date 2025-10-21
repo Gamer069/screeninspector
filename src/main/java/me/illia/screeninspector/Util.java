@@ -78,11 +78,12 @@ public class Util {
 		ImGui.separator();
 
 		ImGui.text("Class:");
-		ImGui.text(screen.getClass().getName());
+		ImGui.text(MappingsUtil.intermediaryToYarn(screen.getClass()));
 
 		ImGui.separator();
 
 		if (screen instanceof HandledScreen<?> handledScreen) {
+			ImGui.text("Title:");
 			int titleX = ((HandledScreenAccessor)handledScreen).robotmod$getTitleX();
 			int titleY = ((HandledScreenAccessor)handledScreen).robotmod$getTitleY();
 			int[] tempTitleX = { titleX };
@@ -102,7 +103,7 @@ public class Util {
 
 		int drawableI = 0;
 		for (Drawable drawable : drawables) {
-			if (ImGui.treeNode(drawable.getClass().getName() + "##" + drawableI)) {
+			if (ImGui.treeNode(MappingsUtil.intermediaryToYarn(drawable.getClass()) + "##" + drawableI)) {
 				ImGui.text("Widget? " + (drawable instanceof Widget ? "yes" : "no"));
 				ImGui.text("Layout widget? " + (drawable instanceof LayoutWidget ? "yes" : "no"));
 
