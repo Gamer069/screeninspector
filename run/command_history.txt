@@ -1,0 +1,9 @@
+/give @s crafting_table
+/give @s stone_slab
+/time set day
+/difficulty peaceful
+/gamemode survival
+/gamemode creative
+/clear
+/give @s minecraft:crafting_table
+/clear

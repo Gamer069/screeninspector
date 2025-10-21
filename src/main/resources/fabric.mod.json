@@ -1,0 +1,31 @@
+{
+    "schemaVersion": 1,
+    "id": "screeninspector",
+    "version": "${version}",
+    "name": "screeninspector",
+    "description": "Allows mod developers to debug their screens",
+    "authors": [],
+    "contact": {},
+    "license": "unlicense",
+    "icon": "assets/screeninspector/icon.png",
+    "environment": "client",
+    "entrypoints": {
+        "fabric-datagen": [
+            "me.illia.screeninspector.client.ScreenInspectorDataGenerator"
+        ],
+        "client": [
+            "me.illia.screeninspector.client.ScreenInspectorClient"
+        ],
+        "main": [
+            "me.illia.screeninspector.ScreenInspector"
+        ]
+    },
+    "mixins": [
+        "screeninspector.mixins.json"
+    ],
+    "depends": {
+        "fabricloader": ">=${loader_version}",
+        "fabric": "*",
+        "minecraft": "${minecraft_version}"
+    }
+}

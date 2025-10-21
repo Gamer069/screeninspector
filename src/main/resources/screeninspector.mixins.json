@@ -1,0 +1,22 @@
+{
+    "required": true,
+    "minVersion": "0.8",
+    "package": "me.illia.screeninspector.mixin",
+    "compatibilityLevel": "JAVA_21",
+    "mixins": [
+        "ScreenAccessor"
+    ],
+    "client": [
+        "HandledScreenAccessor",
+        "ImGuiInitMixin",
+        "ImGuiRenderMixin",
+        "KeyboardMixin",
+        "MouseMixin"
+    ],
+    "injectors": {
+        "defaultRequire": 1
+    },
+    "overwrites": {
+        "requireAnnotations": true
+    }
+}

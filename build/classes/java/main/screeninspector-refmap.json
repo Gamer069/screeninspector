@@ -1,0 +1,50 @@
+{
+  "mappings": {
+    "me/illia/screeninspector/mixin/HandledScreenAccessor": {
+      "titleX": "field_25267:I",
+      "titleY": "field_25268:I"
+    },
+    "me/illia/screeninspector/mixin/ImGuiRenderMixin": {
+      "flipFrame": "Lcom/mojang/blaze3d/systems/RenderSystem;flipFrame(Lnet/minecraft/class_1041;Lnet/minecraft/class_10219;)V"
+    },
+    "me/illia/screeninspector/mixin/KeyboardMixin": {
+      "onChar": "Lnet/minecraft/class_309;method_1457(JLnet/minecraft/class_11905;)V",
+      "onKey": "Lnet/minecraft/class_309;method_1466(JILnet/minecraft/class_11908;)V"
+    },
+    "me/illia/screeninspector/mixin/MouseMixin": {
+      "lockCursor": "Lnet/minecraft/class_312;method_1612()V",
+      "onCursorPos": "Lnet/minecraft/class_312;method_1600(JDD)V",
+      "onMouseButton": "Lnet/minecraft/class_312;method_1601(JLnet/minecraft/class_11910;I)V",
+      "onMouseScroll": "Lnet/minecraft/class_312;method_1598(JDD)V",
+      "unlockCursor": "Lnet/minecraft/class_312;method_1610()V"
+    },
+    "me/illia/screeninspector/mixin/ScreenAccessor": {
+      "drawables": "field_33816:Ljava/util/List;"
+    }
+  },
+  "data": {
+    "named:intermediary": {
+      "me/illia/screeninspector/mixin/HandledScreenAccessor": {
+        "titleX": "field_25267:I",
+        "titleY": "field_25268:I"
+      },
+      "me/illia/screeninspector/mixin/ImGuiRenderMixin": {
+        "flipFrame": "Lcom/mojang/blaze3d/systems/RenderSystem;flipFrame(Lnet/minecraft/class_1041;Lnet/minecraft/class_10219;)V"
+      },
+      "me/illia/screeninspector/mixin/KeyboardMixin": {
+        "onChar": "Lnet/minecraft/class_309;method_1457(JLnet/minecraft/class_11905;)V",
+        "onKey": "Lnet/minecraft/class_309;method_1466(JILnet/minecraft/class_11908;)V"
+      },
+      "me/illia/screeninspector/mixin/MouseMixin": {
+        "lockCursor": "Lnet/minecraft/class_312;method_1612()V",
+        "onCursorPos": "Lnet/minecraft/class_312;method_1600(JDD)V",
+        "onMouseButton": "Lnet/minecraft/class_312;method_1601(JLnet/minecraft/class_11910;I)V",
+        "onMouseScroll": "Lnet/minecraft/class_312;method_1598(JDD)V",
+        "unlockCursor": "Lnet/minecraft/class_312;method_1610()V"
+      },
+      "me/illia/screeninspector/mixin/ScreenAccessor": {
+        "drawables": "field_33816:Ljava/util/List;"
+      }
+    }
+  }
+}
