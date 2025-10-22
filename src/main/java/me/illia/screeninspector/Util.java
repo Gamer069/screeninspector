@@ -14,6 +14,8 @@ import net.minecraft.client.gui.widget.ClickableWidget;
 import net.minecraft.client.gui.widget.LayoutWidget;
 import net.minecraft.client.gui.widget.Widget;
 import net.minecraft.client.input.MouseInput;
+import net.minecraft.entity.player.PlayerInventory;
+import net.minecraft.screen.slot.Slot;
 import net.minecraft.util.Identifier;
 import org.lwjgl.BufferUtils;
 import org.lwjgl.opengl.GL11;
@@ -119,6 +121,26 @@ public class Util {
 			if (ImGui.dragInt("##titleY", tempTitleY)) {
 				((HandledScreenAccessor)handledScreen).robotmod$setTitleY(tempTitleY[0]);
 			}
+
+			ImGui.text("Slots:");
+
+			for (Slot slot : handledScreen.getScreenHandler().slots) {
+				if (ImGui.treeNode("##slot" + slot.id)) {
+					ImGui.text("Inventory:");
+					ImGui.text(MappingsUtil.intermediaryToYarn(slot.inventory.getClass()));
+
+					ImGui.text("Player inventory? " + (slot.inventory instanceof PlayerInventory));
+					if (slot.inventory instanceof PlayerInventory playerInventory) {
+						ImGui.text("Player username: " + playerInventory.player.getGameProfile().name());
+						ImGui.text("Player UUID: " + playerInventory.player.getGameProfile().id().toString());
+					}
+
+					ImGui.text("X: " + slot.x);
+					ImGui.text("Y: " + slot.y);
+
+					ImGui.treePop();
+				}
+			}
 		}
 
 		ImGui.text("Drawables:");
@@ -136,10 +158,12 @@ public class Util {
 
 					ImGui.text("Widget info:");
 
+					ImGui.text("X:");
 					if (ImGui.dragInt("##x" + drawableI, tempX)) {
 						widget.setX(tempX[0]);
 					}
 
+					ImGui.text("Y:");
 					if (ImGui.dragInt("##y" + drawableI, tempY)) {
 						widget.setY(tempY[0]);
 					}
