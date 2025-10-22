@@ -6,11 +6,14 @@ import imgui.flag.ImGuiKey;
 import me.illia.screeninspector.mixin.HandledScreenAccessor;
 import me.illia.screeninspector.mixin.ScreenAccessor;
 import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.gui.Click;
 import net.minecraft.client.gui.Drawable;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.screen.ingame.HandledScreen;
+import net.minecraft.client.gui.widget.ClickableWidget;
 import net.minecraft.client.gui.widget.LayoutWidget;
 import net.minecraft.client.gui.widget.Widget;
+import net.minecraft.client.input.MouseInput;
 import net.minecraft.util.Identifier;
 import org.lwjgl.BufferUtils;
 import org.lwjgl.opengl.GL11;
@@ -27,15 +30,35 @@ public class Util {
 		return i == 0 ? 1 : 0;
 	}
 
-	public static void mouseInfo(MinecraftClient client) {
+	public static ImVec2 guiToWindow(MinecraftClient client, ImVec2 guiPos) {
 		int guiWidth = client.getWindow().getScaledWidth();
-		ImGui.text("Mouse position:");
-
 		int guiHeight = client.getWindow().getScaledHeight();
 		int windowWidth = client.getWindow().getWidth();
 		int windowHeight = client.getWindow().getHeight();
+
+		return new ImVec2(
+			guiPos.x * ((float) windowWidth / guiWidth),
+			guiPos.y * ((float) windowHeight / guiHeight)
+		);
+	}
+
+	public static ImVec2 windowToGui(MinecraftClient client, ImVec2 windowPos) {
+		int guiWidth = client.getWindow().getScaledWidth();
+		int guiHeight = client.getWindow().getScaledHeight();
+		int windowWidth = client.getWindow().getWidth();
+		int windowHeight = client.getWindow().getHeight();
+
+		return new ImVec2(
+			windowPos.x * ((float) guiWidth / windowWidth),
+			windowPos.y * ((float) guiHeight / windowHeight)
+		);
+	}
+
+	public static void mouseInfo(MinecraftClient client) {
+		ImGui.text("Mouse position:");
+
 		ImVec2 localPos = ImGui.getIO().getMousePos();
-		ImVec2 pos = new ImVec2(localPos.x * ((float) guiWidth / windowWidth), localPos.y * ((float) guiHeight / windowHeight));
+		ImVec2 pos = windowToGui(client, localPos);
 
 		ImGui.text("X: " + pos.x + ", Y:" + pos.y);
 
@@ -47,7 +70,7 @@ public class Util {
 
 		if (ImGui.button("Copy Color (Ctrl + Shift + C)") || (ImGui.getIO().getKeyCtrl() && ImGui.getIO().getKeyShift() && ImGui.isKeyPressed(ImGuiKey.C))) {
 			ByteBuffer buffer = BufferUtils.createByteBuffer(4);
-			GL11.glReadPixels((int)localPos.x, windowHeight - 1 - (int)localPos.y, 1, 1, GL11.GL_RGBA, GL11.GL_UNSIGNED_BYTE, buffer);
+			GL11.glReadPixels((int)localPos.x, client.getWindow().getWidth() - 1 - (int)localPos.y, 1, 1, GL11.GL_RGBA, GL11.GL_UNSIGNED_BYTE, buffer);
 
 			int r = buffer.get(0) & 0xFF;
 			int g = buffer.get(1) & 0xFF;
@@ -124,7 +147,20 @@ public class Util {
 					ImGui.text("Size: " + widget.getWidth() + "," + widget.getHeight());
 				}
 
+				if (drawable instanceof ClickableWidget clickableWidget) {
+					if (ImGui.button("Click")) {
+						clickableWidget.onClick(new Click(clickableWidget.getX(), clickableWidget.getY(), new MouseInput(0, 0)), false);
+					}
+				}
+
 				ImGui.treePop();
+			}
+
+			if (ImGui.isItemHovered() && drawable instanceof Widget widget) {
+				ImVec2 pos = guiToWindow(client, new ImVec2(widget.getX(), widget.getY()));
+				ImVec2 pos1 = guiToWindow(client, new ImVec2(widget.getX() + widget.getWidth(), widget.getY() + widget.getHeight()));
+
+				ImGui.getForegroundDrawList().addRect(pos, pos1, ImGui.getColorU32(1.0f, 0.0f, 0.0f, 1.0f), 0.0f, 0, 3f);
 			}
 
 			drawableI++;
@@ -137,5 +173,9 @@ public class Util {
 
 	public static boolean keyboardAndDevtools() {
 		return ImGui.getIO().getWantCaptureKeyboard() && ScreenInspector.DEVTOOLS_ENABLED;
+	}
+
+	public static Identifier mc(String id) {
+		return Identifier.ofVanilla(id);
 	}
 }

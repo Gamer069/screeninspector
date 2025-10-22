@@ -1,1 +1,6 @@
 v1	named	intermediary
+FIELD	me/illia/screeninspector/mixin/ItemStackMixin	Lnet/minecraft/item/Item;	item	field_8038
+FIELD	me/illia/screeninspector/mixin/ItemStackMixin	Lnet/minecraft/item/ItemStack;	EMPTY	field_8037
+FIELD	me/illia/screeninspector/mixin/ItemStackMixin	I	count	field_8031
+FIELD	me/illia/screeninspector/mixin/ItemMixin	Lcom/mojang/serialization/Codec;	ENTRY_CODEC	field_54952
+METHOD	me/illia/screeninspector/mixin/ItemStackMixin	()I	getCount	method_7947

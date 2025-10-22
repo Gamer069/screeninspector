@@ -8,7 +8,6 @@
     "contact": {},
     "license": "unlicense",
     "icon": "assets/screeninspector/icon.png",
-    "environment": "client",
     "entrypoints": {
         "fabric-datagen": [
             "me.illia.screeninspector.client.ScreenInspectorDataGenerator"

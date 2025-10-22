@@ -1,11 +1,21 @@
 {
   "mappings": {
+    "me/illia/screeninspector/mixin/BlockItemMixin": {
+      "useOnBlock": "Lnet/minecraft/class_1792;method_7884(Lnet/minecraft/class_1838;)Lnet/minecraft/class_1269;"
+    },
     "me/illia/screeninspector/mixin/HandledScreenAccessor": {
       "titleX": "field_25267:I",
       "titleY": "field_25268:I"
     },
     "me/illia/screeninspector/mixin/ImGuiRenderMixin": {
       "flipFrame": "Lcom/mojang/blaze3d/systems/RenderSystem;flipFrame(Lnet/minecraft/class_1041;Lnet/minecraft/class_10219;)V"
+    },
+    "me/illia/screeninspector/mixin/ItemMixin": {
+      "<clinit>": "Lnet/minecraft/class_1792;<clinit>()V"
+    },
+    "me/illia/screeninspector/mixin/ItemStackMixin": {
+      "getMaxCount": "Lnet/minecraft/class_1799;method_7914()I",
+      "isEmpty": "Lnet/minecraft/class_1799;method_7960()Z"
     },
     "me/illia/screeninspector/mixin/KeyboardMixin": {
       "onChar": "Lnet/minecraft/class_309;method_1457(JLnet/minecraft/class_11905;)V",
@@ -24,12 +34,22 @@
   },
   "data": {
     "named:intermediary": {
+      "me/illia/screeninspector/mixin/BlockItemMixin": {
+        "useOnBlock": "Lnet/minecraft/class_1792;method_7884(Lnet/minecraft/class_1838;)Lnet/minecraft/class_1269;"
+      },
       "me/illia/screeninspector/mixin/HandledScreenAccessor": {
         "titleX": "field_25267:I",
         "titleY": "field_25268:I"
       },
       "me/illia/screeninspector/mixin/ImGuiRenderMixin": {
         "flipFrame": "Lcom/mojang/blaze3d/systems/RenderSystem;flipFrame(Lnet/minecraft/class_1041;Lnet/minecraft/class_10219;)V"
+      },
+      "me/illia/screeninspector/mixin/ItemMixin": {
+        "<clinit>": "Lnet/minecraft/class_1792;<clinit>()V"
+      },
+      "me/illia/screeninspector/mixin/ItemStackMixin": {
+        "getMaxCount": "Lnet/minecraft/class_1799;method_7914()I",
+        "isEmpty": "Lnet/minecraft/class_1799;method_7960()Z"
       },
       "me/illia/screeninspector/mixin/KeyboardMixin": {
         "onChar": "Lnet/minecraft/class_309;method_1457(JLnet/minecraft/class_11905;)V",
