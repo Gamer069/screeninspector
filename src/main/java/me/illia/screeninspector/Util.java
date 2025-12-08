@@ -2,9 +2,11 @@ package me.illia.screeninspector;
 
 import imgui.ImGui;
 import imgui.ImVec2;
+import imgui.ImVec4;
 import imgui.flag.ImGuiKey;
 import me.illia.screeninspector.mixin.HandledScreenAccessor;
 import me.illia.screeninspector.mixin.ScreenAccessor;
+import net.minecraft.advancement.criterion.InventoryChangedCriterion;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.Click;
 import net.minecraft.client.gui.Drawable;
@@ -105,31 +107,40 @@ public class Util {
 		ImGui.text("Class:");
 		ImGui.text(MappingsUtil.intermediaryToYarn(screen.getClass()));
 
+		ImGui.text("Is handled?:");
+		ImGui.text(screen instanceof HandledScreen<?> ? "true" : "false");
+
 		ImGui.separator();
 
 		if (screen instanceof HandledScreen<?> handledScreen) {
-			ImGui.text("Title:");
-			int titleX = ((HandledScreenAccessor)handledScreen).robotmod$getTitleX();
-			int titleY = ((HandledScreenAccessor)handledScreen).robotmod$getTitleY();
+			ImGui.text("Title pos:");
+			int titleX = ((HandledScreenAccessor)handledScreen).screeninspector$getTitleX();
+			int titleY = ((HandledScreenAccessor)handledScreen).screeninspector$getTitleY();
 			int[] tempTitleX = { titleX };
 			int[] tempTitleY = { titleY };
 
 			if (ImGui.dragInt("##titleX", tempTitleX)) {
-				((HandledScreenAccessor)handledScreen).robotmod$setTitleX(tempTitleX[0]);
+				((HandledScreenAccessor)handledScreen).screeninspector$setTitleX(tempTitleX[0]);
 			}
 
 			if (ImGui.dragInt("##titleY", tempTitleY)) {
-				((HandledScreenAccessor)handledScreen).robotmod$setTitleY(tempTitleY[0]);
+				((HandledScreenAccessor)handledScreen).screeninspector$setTitleY(tempTitleY[0]);
 			}
+
+			String screenHandlerClass = MappingsUtil.intermediaryToYarn(handledScreen.getScreenHandler().getClass());
+
+			ImGui.text("Handled by:");
+			ImGui.textColored(new ImVec4(0.0f, 1.0f, 0.0f, 1.0f), screenHandlerClass);
 
 			ImGui.text("Slots:");
 
 			for (Slot slot : handledScreen.getScreenHandler().slots) {
-				if (ImGui.treeNode("##slot" + slot.id)) {
+				if (ImGui.treeNode("##slot" + slot.id, "" + slot.id)) {
 					ImGui.text("Inventory:");
 					ImGui.text(MappingsUtil.intermediaryToYarn(slot.inventory.getClass()));
 
 					ImGui.text("Player inventory? " + (slot.inventory instanceof PlayerInventory));
+
 					if (slot.inventory instanceof PlayerInventory playerInventory) {
 						ImGui.text("Player username: " + playerInventory.player.getGameProfile().name());
 						ImGui.text("Player UUID: " + playerInventory.player.getGameProfile().id().toString());
@@ -140,11 +151,26 @@ public class Util {
 
 					ImGui.treePop();
 				}
+
+				if (ImGui.isItemHovered()) {
+					int width = 16;
+					int height = 16;
+
+					HandledScreenAccessor accessor = ((HandledScreenAccessor)handledScreen);
+
+					int x = accessor.screeninspector$getX() + slot.x;
+					int y = accessor.screeninspector$getY() + slot.y;
+
+					ImVec2 pos = guiToWindow(client, new ImVec2(x, y));
+					ImVec2 pos1 = guiToWindow(client, new ImVec2(x + width, y + height));
+
+					ImGui.getForegroundDrawList().addRect(pos, pos1, ImGui.getColorU32(1.0f, 0.0f, 0.0f, 1.0f), 0.0f, 0, 3f);
+				}
 			}
 		}
 
 		ImGui.text("Drawables:");
-		List<Drawable> drawables = ((ScreenAccessor)screen).robotmod$getDrawables();
+		List<Drawable> drawables = ((ScreenAccessor)screen).screeninspector$getDrawables();
 
 		int drawableI = 0;
 		for (Drawable drawable : drawables) {

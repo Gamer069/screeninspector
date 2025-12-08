@@ -21,7 +21,7 @@ public class MouseMixin {
 
 	@Inject(method = "onMouseScroll", at = @At("HEAD"), cancellable = true)
 	private void onMouseScroll(long window, double horizontal, double vertical, CallbackInfo ci) {
-		if (Util.mouseAndDevtools()) {
+		if (ScreenInspector.DEVTOOLS_ENABLED) {
 			ci.cancel();
 		}
 	}

@@ -16,7 +16,7 @@ public class ImUtil {
 
 	public static final String GLSL_VERSION = "330";
 
-	public static long win;
+	public static long WIN;
 
 	// TODO: make this configurable
 	public static void init(long win) {
@@ -42,7 +42,7 @@ public class ImUtil {
 			style.setColor(ImGuiCol.WindowBg, ImGui.getColorU32(ImGuiCol.WindowBg, 1));
 		}
 
-		ImUtil.win = win;
+		ImUtil.WIN = win;
 
 		glfw.init(win, true);
 		gl3.init("#version " + GLSL_VERSION);
@@ -51,9 +51,9 @@ public class ImUtil {
 
 	public static void render() {
 		if (ScreenInspector.DEVTOOLS_ENABLED || ScreenInspector.MINECRAFT_WANT_UNLOCK) {
-			GLFW.glfwSetInputMode(ImUtil.win, GLFW.GLFW_CURSOR, GLFW.GLFW_CURSOR_NORMAL);
+			GLFW.glfwSetInputMode(ImUtil.WIN, GLFW.GLFW_CURSOR, GLFW.GLFW_CURSOR_NORMAL);
 		} else {
-			GLFW.glfwSetInputMode(ImUtil.win, GLFW.GLFW_CURSOR, GLFW.GLFW_CURSOR_DISABLED);
+			GLFW.glfwSetInputMode(ImUtil.WIN, GLFW.GLFW_CURSOR, GLFW.GLFW_CURSOR_DISABLED);
 		}
 
 		glfw.newFrame();

@@ -4,9 +4,6 @@
     "package": "me.illia.screeninspector.mixin",
     "compatibilityLevel": "JAVA_21",
     "mixins": [
-        "BlockItemMixin",
-        "ItemMixin",
-        "ItemStackMixin",
         "ScreenAccessor"
     ],
     "client": [

@@ -10,5 +10,5 @@ import java.util.List;
 @Mixin(Screen.class)
 public interface ScreenAccessor {
 	@Accessor("drawables")
-	public abstract List<Drawable> robotmod$getDrawables();
+	public abstract List<Drawable> screeninspector$getDrawables();
 }
