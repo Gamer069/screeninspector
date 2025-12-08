@@ -153,6 +153,7 @@ public class Util {
 				}
 
 				if (ImGui.isItemHovered()) {
+					// DEFAULT SLOT DIMENSIONS
 					int width = 16;
 					int height = 16;
 
