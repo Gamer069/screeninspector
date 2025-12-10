@@ -18,6 +18,9 @@ fabricApi {
 }
 
 repositories {
+    flatDir {
+        dirs 'libs'
+    }
     // Add repositories to retrieve artifacts from in here.
     // You should only use this when depending on other mods because
     // Loom adds the essential maven repositories to download Minecraft and libraries from automatically.
@@ -35,6 +38,11 @@ dependencies {
 
     modImplementation "io.github.spair:imgui-java-lwjgl3:${project.imgui_version}"
     modImplementation "io.github.spair:imgui-java-binding:${project.imgui_version}"
+
+    modImplementation 'party.iroiro.luajava:luajava:4.0.2'
+    modImplementation 'party.iroiro.luajava:luajit:4.0.2'
+
+    runtimeOnly 'party.iroiro.luajava:luajit-platform:4.0.2:natives-desktop'
 
     runtimeOnly "io.github.spair:imgui-java-natives-windows:${project.imgui_version}"
     runtimeOnly "io.github.spair:imgui-java-natives-linux:${project.imgui_version}"

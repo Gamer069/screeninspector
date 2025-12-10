@@ -1,1 +1,2 @@
 v1	named	intermediary
+METHOD	me/illia/screeninspector/mixin/WindowMixin	(JII)V	onWindowSizeChanged	method_4488

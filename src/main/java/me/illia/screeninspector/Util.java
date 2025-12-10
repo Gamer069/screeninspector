@@ -16,11 +16,14 @@ import net.minecraft.client.gui.widget.ClickableWidget;
 import net.minecraft.client.gui.widget.LayoutWidget;
 import net.minecraft.client.gui.widget.Widget;
 import net.minecraft.client.input.MouseInput;
+import net.minecraft.client.util.Window;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.screen.slot.Slot;
 import net.minecraft.util.Identifier;
 import org.lwjgl.BufferUtils;
 import org.lwjgl.opengl.GL11;
+import party.iroiro.luajava.Lua;
+import party.iroiro.luajava.luajit.LuaJitConsts;
 
 import java.nio.ByteBuffer;
 import java.util.List;
@@ -34,11 +37,11 @@ public class Util {
 		return i == 0 ? 1 : 0;
 	}
 
-	public static ImVec2 guiToWindow(MinecraftClient client, ImVec2 guiPos) {
-		int guiWidth = client.getWindow().getScaledWidth();
-		int guiHeight = client.getWindow().getScaledHeight();
-		int windowWidth = client.getWindow().getWidth();
-		int windowHeight = client.getWindow().getHeight();
+	public static ImVec2 guiToWindow(Window win, ImVec2 guiPos) {
+		int guiWidth = win.getScaledWidth();
+		int guiHeight = win.getScaledHeight();
+		int windowWidth = win.getWidth();
+		int windowHeight = win.getHeight();
 
 		return new ImVec2(
 			guiPos.x * ((float) windowWidth / guiWidth),
@@ -46,11 +49,11 @@ public class Util {
 		);
 	}
 
-	public static ImVec2 windowToGui(MinecraftClient client, ImVec2 windowPos) {
-		int guiWidth = client.getWindow().getScaledWidth();
-		int guiHeight = client.getWindow().getScaledHeight();
-		int windowWidth = client.getWindow().getWidth();
-		int windowHeight = client.getWindow().getHeight();
+	public static ImVec2 windowToGui(Window win, ImVec2 windowPos) {
+		int guiWidth = win.getScaledWidth();
+		int guiHeight = win.getScaledHeight();
+		int windowWidth = win.getWidth();
+		int windowHeight = win.getHeight();
 
 		return new ImVec2(
 			windowPos.x * ((float) guiWidth / windowWidth),
@@ -58,164 +61,16 @@ public class Util {
 		);
 	}
 
-	public static void mouseInfo(MinecraftClient client) {
-		ImGui.text("Mouse position:");
-
-		ImVec2 localPos = ImGui.getIO().getMousePos();
-		ImVec2 pos = windowToGui(client, localPos);
-
-		ImGui.text("X: " + pos.x + ", Y:" + pos.y);
-
-		if (ImGui.button("Copy (Ctrl + C)") || (ImGui.getIO().getKeyCtrl() && !ImGui.getIO().getKeyShift() && ImGui.isKeyPressed(ImGuiKey.C))) {
-			client.keyboard.setClipboard(pos.x + "," + pos.y);
-		}
-
-		ImGui.separator();
-
-		if (ImGui.button("Copy Color (Ctrl + Shift + C)") || (ImGui.getIO().getKeyCtrl() && ImGui.getIO().getKeyShift() && ImGui.isKeyPressed(ImGuiKey.C))) {
-			ByteBuffer buffer = BufferUtils.createByteBuffer(4);
-			GL11.glReadPixels((int)localPos.x, client.getWindow().getWidth() - 1 - (int)localPos.y, 1, 1, GL11.GL_RGBA, GL11.GL_UNSIGNED_BYTE, buffer);
-
-			int r = buffer.get(0) & 0xFF;
-			int g = buffer.get(1) & 0xFF;
-			int b = buffer.get(2) & 0xFF;
-			int a = buffer.get(3) & 0xFF;
-
-			String hex = String.format("#%02X%02X%02X%02X", a, r, g, b);
-
-			client.keyboard.setClipboard(hex);
-		}
+	public static int argbToImGuiColor(int argb) {
+		int a = (argb >> 24) & 0xFF;
+		int r = (argb >> 16) & 0xFF;
+		int g = (argb >> 8) & 0xFF;
+		int b = argb & 0xFF;
+		return ImGui.colorConvertFloat4ToU32(r / 255f, g / 255f, b / 255f, a / 255f);
 	}
 
-	public static void curScreen(MinecraftClient client) {
-		Screen screen = client.currentScreen;
-
-		if (screen == null) {
-			ImGui.textColored(200, 10, 27, 255, "No screen is currently open!");
-			return;
-		}
-
-		mouseInfo(client);
-
-		ImGui.separator();
-
-		ImGui.text("Title:");
-		ImGui.text(screen.getTitle().getString().isEmpty() ? "<empty string>" : screen.getTitle().getString());
-
-		ImGui.separator();
-
-		ImGui.text("Class:");
-		ImGui.text(MappingsUtil.intermediaryToYarn(screen.getClass()));
-
-		ImGui.text("Is handled?:");
-		ImGui.text(screen instanceof HandledScreen<?> ? "true" : "false");
-
-		ImGui.separator();
-
-		if (screen instanceof HandledScreen<?> handledScreen) {
-			ImGui.text("Title pos:");
-			int titleX = ((HandledScreenAccessor)handledScreen).screeninspector$getTitleX();
-			int titleY = ((HandledScreenAccessor)handledScreen).screeninspector$getTitleY();
-			int[] tempTitleX = { titleX };
-			int[] tempTitleY = { titleY };
-
-			if (ImGui.dragInt("##titleX", tempTitleX)) {
-				((HandledScreenAccessor)handledScreen).screeninspector$setTitleX(tempTitleX[0]);
-			}
-
-			if (ImGui.dragInt("##titleY", tempTitleY)) {
-				((HandledScreenAccessor)handledScreen).screeninspector$setTitleY(tempTitleY[0]);
-			}
-
-			String screenHandlerClass = MappingsUtil.intermediaryToYarn(handledScreen.getScreenHandler().getClass());
-
-			ImGui.text("Handled by:");
-			ImGui.textColored(new ImVec4(0.0f, 1.0f, 0.0f, 1.0f), screenHandlerClass);
-
-			ImGui.text("Slots:");
-
-			for (Slot slot : handledScreen.getScreenHandler().slots) {
-				if (ImGui.treeNode("##slot" + slot.id, "" + slot.id)) {
-					ImGui.text("Inventory:");
-					ImGui.text(MappingsUtil.intermediaryToYarn(slot.inventory.getClass()));
-
-					ImGui.text("Player inventory? " + (slot.inventory instanceof PlayerInventory));
-
-					if (slot.inventory instanceof PlayerInventory playerInventory) {
-						ImGui.text("Player username: " + playerInventory.player.getGameProfile().name());
-						ImGui.text("Player UUID: " + playerInventory.player.getGameProfile().id().toString());
-					}
-
-					ImGui.text("X: " + slot.x);
-					ImGui.text("Y: " + slot.y);
-
-					ImGui.treePop();
-				}
-
-				if (ImGui.isItemHovered()) {
-					// DEFAULT SLOT DIMENSIONS
-					int width = 16;
-					int height = 16;
-
-					HandledScreenAccessor accessor = ((HandledScreenAccessor)handledScreen);
-
-					int x = accessor.screeninspector$getX() + slot.x;
-					int y = accessor.screeninspector$getY() + slot.y;
-
-					ImVec2 pos = guiToWindow(client, new ImVec2(x, y));
-					ImVec2 pos1 = guiToWindow(client, new ImVec2(x + width, y + height));
-
-					ImGui.getForegroundDrawList().addRect(pos, pos1, ImGui.getColorU32(1.0f, 0.0f, 0.0f, 1.0f), 0.0f, 0, 3f);
-				}
-			}
-		}
-
-		ImGui.text("Drawables:");
-		List<Drawable> drawables = ((ScreenAccessor)screen).screeninspector$getDrawables();
-
-		int drawableI = 0;
-		for (Drawable drawable : drawables) {
-			if (ImGui.treeNode(MappingsUtil.intermediaryToYarn(drawable.getClass()) + "##" + drawableI)) {
-				ImGui.text("Widget? " + (drawable instanceof Widget ? "yes" : "no"));
-				ImGui.text("Layout widget? " + (drawable instanceof LayoutWidget ? "yes" : "no"));
-
-				if (drawable instanceof Widget widget) {
-					int[] tempX = { widget.getX() };
-					int[] tempY = { widget.getY() };
-
-					ImGui.text("Widget info:");
-
-					ImGui.text("X:");
-					if (ImGui.dragInt("##x" + drawableI, tempX)) {
-						widget.setX(tempX[0]);
-					}
-
-					ImGui.text("Y:");
-					if (ImGui.dragInt("##y" + drawableI, tempY)) {
-						widget.setY(tempY[0]);
-					}
-
-					ImGui.text("Size: " + widget.getWidth() + "," + widget.getHeight());
-				}
-
-				if (drawable instanceof ClickableWidget clickableWidget) {
-					if (ImGui.button("Click")) {
-						clickableWidget.onClick(new Click(clickableWidget.getX(), clickableWidget.getY(), new MouseInput(0, 0)), false);
-					}
-				}
-
-				ImGui.treePop();
-			}
-
-			if (ImGui.isItemHovered() && drawable instanceof Widget widget) {
-				ImVec2 pos = guiToWindow(client, new ImVec2(widget.getX(), widget.getY()));
-				ImVec2 pos1 = guiToWindow(client, new ImVec2(widget.getX() + widget.getWidth(), widget.getY() + widget.getHeight()));
-
-				ImGui.getForegroundDrawList().addRect(pos, pos1, ImGui.getColorU32(1.0f, 0.0f, 0.0f, 1.0f), 0.0f, 0, 3f);
-			}
-
-			drawableI++;
-		}
+	public static String bool(Object obj, Class<?> clazz) {
+		return clazz.isInstance(obj) ? "yes" : "no";
 	}
 
 	public static boolean mouseAndDevtools() {
@@ -228,5 +83,13 @@ public class Util {
 
 	public static Identifier mc(String id) {
 		return Identifier.ofVanilla(id);
+	}
+
+	public static void highlight(ImVec2 pos, ImVec2 pos1, float r, float g, float b, float a, float round, float thick) {
+		ImGui.getForegroundDrawList().addRect(pos, pos1, ImGui.getColorU32(r, g, b, a), round, 0, thick);
+	}
+
+	public static void basicHighlight(ImVec2 pos, ImVec2 pos1) {
+		highlight(pos, pos1, 1.0f, 0.0f, 0.0f, 1.0f, 0.0f, 3.0f);
 	}
 }

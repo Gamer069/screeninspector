@@ -11,7 +11,8 @@
         "ImGuiInitMixin",
         "ImGuiRenderMixin",
         "KeyboardMixin",
-        "MouseMixin"
+        "MouseMixin",
+        "WindowMixin"
     ],
     "injectors": {
         "defaultRequire": 1
